@@ -25,8 +25,8 @@ my $plots ="";
 my $multiplots = "";
 my $nplots = 0;
 for(my $i = 2; $i <= $#campiCSV+1; $i++){
-      $plots .=           "file using ((\$1-offsZero)/divt):(\$$i) title label$i with lines lw 1 axes x1y1, \\\n";
-      $multiplots .= "plot file using ((\$1-offsZero)/divt):(\$$i) title label$i with lines lw 1 axes x1y1\n";
+      $plots .=           "     file using ((\$1-offsZero)/divt):(\$$i) title label$i with lines lw 1 axes x1y1, \\\n";
+      $multiplots .= "     plot file using ((\$1-offsZero)/divt):(\$$i) title label$i with lines lw 1 axes x1y1\n";
       $nplots++;
 }
 print $plots;
@@ -88,7 +88,10 @@ $labels
 #set term png  size 1600,950 background rgb 'black'
 #set output "out.png"
 
-offsZero = $datiCSV[0]
+# Calcola il primo valore di x automaticamente  (da ChatGPT)
+stats file using 1 nooutput
+
+offsZero = STATS_min + 0 #(da ChatGPT)
 # offsZero = 0  #togliere il commento per visualizzare asse x con HH:MM:ss
 
 divt= 1000
@@ -110,21 +113,22 @@ if (divt == 1) {
 }
 
 
-#lc "color"  per colore linea
+set lmargin at screen 0.05
+set rmargin at screen 1-0.05
+unset border
+set grid
 
 #  1 per multiplot
 #  0 per singolo plot
 multi = 1
 
+#lc "color"  per colore linea
 if (!multi) {
-     plot $plots
+     plot \\
+$plots
 } else { #multiplot
      set multiplot layout $nplots,1
-     set lmargin at screen 0.05
-     set rmargin at screen 1-0.05
-     unset border
-     set grid
-     $multiplots
+$multiplots
 }
      
 END_SCRIPT
