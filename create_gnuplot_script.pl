@@ -127,8 +127,18 @@ if (!multi) {
      plot \\
 $plots
 } else { #multiplot
-     set multiplot layout $nplots,1
-$multiplots
+     stop = 0
+     while (!stop) {
+          set autoscale y
+          set multiplot layout $nplots,1
+          $multiplots
+     # zooming-in with mouse
+     # pressing l for set logscale x, and l again for unset logscale x
+     # pressing a for set autoscale x
+         pause mouse key
+         if (MOUSE_KEY==97) { set autoscale x }  #a
+         if (MOUSE_KEY==113) { stop =1 }  #q
+     }
 }
      
 END_SCRIPT
